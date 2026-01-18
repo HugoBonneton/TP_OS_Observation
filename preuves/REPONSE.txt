@@ -114,3 +114,68 @@ Après avoir passé le processus B à +10, on observe que le processus A prend u
 L'ordonnanceur du noyau a pris en compte la nouvelle priorité et a décidé de donner plus de CPU au processus A
 
 
+-----------------------------------------------------------
+A5 — Synthèse
+-----------------------------------------------------------
+
+Abstraction (A1/A2) : On a vu qu'une action simple comme afficher du texte, tapper au clavier utilise des syscalls comme write ou encore stdout et stdin
+De plus, la redirection montre que linux peut connecter la sortie d'un programme vers un fichier au lieu de l'écran sans changer le programme lui-même grâce à la mémoire tempon 
+
+Décision de l'OS (A4) : L'utilisation du nice a prouvé que c'est le noyau qui décide quel processus a le droit d'utiliser le CPU en priorité grace à sa notation de gentillese 
+
+Mémoire (A3) : J'ai appris que le système économise les ressources en ne donnant de la RAM physique (VmRSS) que lorsque c'est nécessaire, même si le programme a réservé beaucoup de mémoire virtuelle (VmSize)
+
+
+===========================================================
+PARTIE B — BONUS
+===========================================================
+
+B1 — Bonus Isolation : namespaces “à la main”
+Q11) Pourquoi êtes-vous souvent PID 1 dans ce shell ?
+
+
+Définition : Un "namespace" de PID crée une nouvelle vue isolée des processus, et chaque processus ne voit que sa tâche
+Explication : Comme vous avez créé une nouvelle "bulle" isolée, le premier processus que vous lancez dedans devient automatiquement le PID 1
+
+Q12) Qu’est-ce qui change dans la liste des processus (ps) ? Qu’est-ce qui ne change pas ?
+
+Ce qui change : La commande "ps" ne montre plus les centaines de processus de la VM, mais seulement ceux qui tournent à l'intérieur du namespace 
+Ce qui ne change pas : Le noyau reste le même, les ressources de la machine hôte reste les mêmes, ce que l'on obtient c'est une vue "filtrée" de ce qui se passe
+
+B2 — Bonus Ressources : limiter CPU/RAM via systemd
+Q13) Où “vit” la limitation (conceptuellement) : processus ? noyau ? groupe de contrôle ?
+
+La limitation ne se trouve pas dans le code du programme, mais elle "vit" dans le groupe de contrôle (cgroup) géré par le noyau
+Ce n'est pas le programme qui décide de se limiter lui-même; c'est le noyau ce même noyau utilise l'ordonnanceur et des quotas précis pour surveiller le processus
+Dès que le quota de temps est atteint, le noyau intervient par "préemption" pour retirer le processus du processeur
+
+
+Q14) Comment vérifier que vous êtes dans un cgroup ?
+
+
+On peut regarder le fichier spécial /proc/self/cgroup.
+Ce fichier affiche le chemin du groupe de contrôle auquel appartient le shell actuel dans mon cas : 
+0::/system.slice/system-container\x2dgetty.slice/container-getty@1.service
+
+B3 — Bonus Sécurité : capabilities
+Q15) Qu’est-ce qu’une capability ? Pourquoi c’est plus fin qu’un binaire setuid root ?
+
+
+C'est un découpage des privilèges "root" en petites autorisations précises
+Au lieu de donner tous les pouvoirs (root) à un programme, on ne lui donne que ce dont il a besoin et cela réduit fortement les risques si le programme est piraté
+
+Q16) À votre avis, quelle permission réseau ping cherche-t-il à obtenir ?
+
+Ping a besoin de la capacité CAP_NET_RAW, ce qui lui permet d'envoyer des paquets ICMP "particuliers" que seul les administrateurs peuvent normalement envoyer
+
+B4 — Bonus Recherche : Thème R3 (Namespaces et conteneurs)
+
+Mini-compte-rendu — Thème R2 : AppArmor / SELinux
+La sécurité d'un système Linux repose sur deux modèles de contrôle d'accès : le DAC et le MAC.
+
+DAC vs MAC : La différence fondamentale réside dans l'autorité des permissions
+- Le DAC (Discretionary Access Control) correspond aux permissions classiques (UID/GID/RWX) où le propriétaire d'un fichier décide qui peut y accéder
+- Le MAC (Mandatory Access Control) est une politique de sécurité imposée par le système (le kernel) que l'utilisateur ne peut pas contourner, même s'il est propriétaire du fichier, uniquement l'administrateur peut choisir
+
+
+
