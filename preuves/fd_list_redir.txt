@@ -1,0 +1,5 @@
+total 0
+lrwx------ 1 root root 64 Jan 18 13:38 0 -> /dev/tty1
+l-wx------ 1 root root 64 Jan 18 13:38 1 -> /root/tp_os/preuves/out.txt
+l-wx------ 1 root root 64 Jan 18 13:38 2 -> /root/tp_os/preuves/err.txt
+lr-x------ 1 root root 64 Jan 18 13:38 255 -> /root/tp_os/preuves/talk.sh

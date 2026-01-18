@@ -1,0 +1,25 @@
+5553  execve("/usr/bin/cat", ["cat", "preuves/demo.txt"], 0x7fff26d207a0 /* 13 vars */) = 0
+5553  mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x785c6429d000
+5553  openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3
+5553  mmap(NULL, 10311, PROT_READ, MAP_PRIVATE, 3, 0) = 0x785c6429a000
+5553  close(3)                          = 0
+5553  openat(AT_FDCWD, "/lib/x86_64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3
+5553  read(3, "\177ELF\2\1\1\3\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0p\236\2\0\0\0\0\0"..., 832) = 832
+5553  mmap(NULL, 2055800, PROT_READ, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x785c640a4000
+5553  mmap(0x785c640cc000, 1462272, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x28000) = 0x785c640cc000
+5553  mmap(0x785c64231000, 352256, PROT_READ, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x18d000) = 0x785c64231000
+5553  mmap(0x785c64287000, 24576, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x1e2000) = 0x785c64287000
+5553  mmap(0x785c6428d000, 52856, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x785c6428d000
+5553  close(3)                          = 0
+5553  mmap(NULL, 12288, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x785c640a1000
+5553  munmap(0x785c6429a000, 10311)     = 0
+5553  openat(AT_FDCWD, "preuves/demo.txt", O_RDONLY) = 3
+5553  mmap(NULL, 270336, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x785c6405f000
+5553  read(3, "hello\n", 262144)        = 6
+5553  write(1, "hello\n", 6)            = 6
+5553  read(3, "", 262144)               = 0
+5553  munmap(0x785c6405f000, 270336)    = 0
+5553  close(3)                          = 0
+5553  close(1)                          = 0
+5553  close(2)                          = 0
+5553  +++ exited with 0 +++

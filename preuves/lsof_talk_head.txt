@@ -1,0 +1,11 @@
+COMMAND  PID USER  FD   TYPE DEVICE SIZE/OFF   NODE NAME
+bash    7958 root cwd    DIR    7,1     4096 394096 /root/tp_os
+bash    7958 root rtd    DIR    7,1     4096      2 /
+bash    7958 root txt    REG    7,1  1298416 131316 /usr/bin/bash
+bash    7958 root mem    REG    7,1  2003408 132931 /usr/lib/x86_64-linux-gnu/libc.so.6
+bash    7958 root mem    REG    7,1   220464 132591 /usr/lib/x86_64-linux-gnu/libtinfo.so.6.5
+bash    7958 root mem    REG    7,1   225600 132928 /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+bash    7958 root   0u   CHR  136,1      0t0      4 /dev/tty1
+bash    7958 root   1u   CHR  136,1      0t0      4 /dev/tty1
+bash    7958 root   2u   CHR  136,1      0t0      4 /dev/tty1
+bash    7958 root 255r   REG    7,1       76 394122 /root/tp_os/preuves/talk.sh

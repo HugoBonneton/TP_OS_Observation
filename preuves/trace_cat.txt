@@ -1,0 +1,44 @@
+5517  execve("/usr/bin/cat", ["cat", "preuves/demos.txt"], 0x7ffec37a24e0 /* 13 vars */) = 0
+5517  brk(NULL)                         = 0x5641598b7000
+5517  mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7e1e6740b000
+5517  access("/etc/ld.so.preload", R_OK) = -1 ENOENT (No such file or directory)
+5517  openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3
+5517  fstat(3, {st_mode=S_IFREG|0644, st_size=10311, ...}) = 0
+5517  mmap(NULL, 10311, PROT_READ, MAP_PRIVATE, 3, 0) = 0x7e1e67408000
+5517  close(3)                          = 0
+5517  openat(AT_FDCWD, "/lib/x86_64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3
+5517  read(3, "\177ELF\2\1\1\3\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0p\236\2\0\0\0\0\0"..., 832) = 832
+5517  pread64(3, "\6\0\0\0\4\0\0\0@\0\0\0\0\0\0\0@\0\0\0\0\0\0\0@\0\0\0\0\0\0\0"..., 840, 64) = 840
+5517  fstat(3, {st_mode=S_IFREG|0755, st_size=2003408, ...}) = 0
+5517  pread64(3, "\6\0\0\0\4\0\0\0@\0\0\0\0\0\0\0@\0\0\0\0\0\0\0@\0\0\0\0\0\0\0"..., 840, 64) = 840
+5517  mmap(NULL, 2055800, PROT_READ, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x7e1e67212000
+5517  mmap(0x7e1e6723a000, 1462272, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x28000) = 0x7e1e6723a000
+5517  mmap(0x7e1e6739f000, 352256, PROT_READ, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x18d000) = 0x7e1e6739f000
+5517  mmap(0x7e1e673f5000, 24576, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x1e2000) = 0x7e1e673f5000
+5517  mmap(0x7e1e673fb000, 52856, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x7e1e673fb000
+5517  close(3)                          = 0
+5517  mmap(NULL, 12288, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7e1e6720f000
+5517  arch_prctl(ARCH_SET_FS, 0x7e1e6720f740) = 0
+5517  set_tid_address(0x7e1e6720fa10)   = 5517
+5517  set_robust_list(0x7e1e6720fa20, 24) = 0
+5517  rseq(0x7e1e6720f680, 0x20, 0, 0x53053053) = 0
+5517  mprotect(0x7e1e673f5000, 16384, PROT_READ) = 0
+5517  mprotect(0x56411f7e9000, 4096, PROT_READ) = 0
+5517  mprotect(0x7e1e67449000, 8192, PROT_READ) = 0
+5517  prlimit64(0, RLIMIT_STACK, NULL, {rlim_cur=8192*1024, rlim_max=RLIM64_INFINITY}) = 0
+5517  munmap(0x7e1e67408000, 10311)     = 0
+5517  getrandom("\xe4\x2f\x2f\xf3\x53\x3a\xc6\xa3", 8, GRND_NONBLOCK) = 8
+5517  brk(NULL)                         = 0x5641598b7000
+5517  brk(0x5641598d8000)               = 0x5641598d8000
+5517  fstat(1, {st_mode=S_IFCHR|0666, st_rdev=makedev(0x1, 0x3), ...}) = 0
+5517  openat(AT_FDCWD, "preuves/demos.txt", O_RDONLY) = -1 ENOENT (No such file or directory)
+5517  fcntl(1, F_GETFL)                 = 0x8001 (flags O_WRONLY|O_LARGEFILE)
+5517  write(2, "cat: ", 5)              = 5
+5517  write(2, "preuves/demos.txt", 17) = 17
+5517  write(2, ": No such file or directory", 27) = 27
+5517  write(2, "\n", 1)                 = 1
+5517  close(1)                          = 0
+5517  close(2)                          = 0
+5517  exit_group(1)                     = ?
+5517  +++ exited with 1 +++
+c
