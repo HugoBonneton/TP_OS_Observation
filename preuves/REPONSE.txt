@@ -1,0 +1,116 @@
+-----------------------------------------------------------
+A1 — Abstraction : un programme “parle” au noyau
+-----------------------------------------------------------
+
+Q1) Citez 3 syscalls vus dans trace_cat_filtre.txt et expliquez leur rôle "fonctionnel".
+Voici trois appels système fondamentaux présents dans votre trace :
+
+execve : C'est le tout premier appel. Il permet de charger et exécuter un programme. Dans le tp il demande au noyau de remplacer le processus actuel par l'exécutable /usr/bin/cat
+
+openat : Envoie un syscall our avoir accès à un fichier. Le noyau vérifie les permissions et, si tout est correct, renvoie un entier la dans mon cas 3
+
+read : Il sert à transférer les données du fichier du disque dur à la RAM, par exemple cat l'utilise pour lire le contenu de demo.txt une fois que le fichier est ouvert
+
+Q2) Trouvez un openat(...). Quel est le chemin ouvert ? Avec quel type d’accès (lecture/écriture) ?
+Dans votre fichier trace_cat_filtre.txt, vous devriez trouver une ligne ressemblant à celle-ci vers la fin du fichier :
+
+openat(AT_FDCWD, "preuves/demo.txt", O_RDONLY) = 3
+
+Le chemin ouvert : "preuves/demo.txt" / fichier qu'on a créé avec la commande echo
+
+Le type d'accès : O_RDONLY (Open Read-Only) La commande Cat ne fait qu'afficher le contenu sans le modifier, donc uniquement un accès en lecture seule
+
+Q3) Trouvez au moins un code d’erreur (errno) dans trace_ls.txt OU trace_cat.txt. Donnez son nom et interprétez-le.
+Même quand une commande réussit, elle génère souvent des erreurs "invisibles" en cherchant des fichiers de configuration qui n'existent pas. Vous trouverez probablement une ligne comme celle-ci :
+
+5517  openat(AT_FDCWD, "preuves/demos.txt", O_RDONLY) = -1 ENOENT (No such file or directory)
+
+Nom de l'erreur : ENOENT
+
+Le syscall openat a échoué car le programme a tenté d'accéder à un fichier qui n'existe pas à l'emplacement indiqué (ici, une erreur de frappe que j'ai fais : demos.txt au lieu de demo.txt). Le noyau renvoie la valeur -1 pour signaler l'échec et définit le code d'erreur ENOENT , ce qui permet au programme de savoir que le chemin ou le fichier est introuvable
+
+-----------------------------------------------------------
+A2 — Fichiers, descripteurs (FD) & redirections
+-----------------------------------------------------------
+
+Q4) Dans /proc/<pid>/fd, quels numéros de FD correspondent typiquement à stdin/stdout/stderr ?
+Les numéros de descripteurs de fichiers (FD) sont des standards sous Linux qui permettent au processus de communiquer avec l'extérieur. Les plus communes sont :
+
+0 : stdin (Entrée) = C'est par ici que le programme reçoit des données, comme le clavier par exemple
+
+1 : stdout (Sortie) = C'est le flux utilisé pour l'affichage normal du texte, exemple l'écran
+
+2 : stderr (Erreur) = C'est le flux réservé aux messages d'erreur, ce flux permet aux erreurs de ne pas se mélanger avec l'entrée et la sortie
+
+Q5) Quelle différence voyez-vous entre fd_list.txt et fd_list_redir.txt ?
+La différence se situe au niveau de la destination des liens symboliques pour les FD 1 et 2 :
+
+Dans fd_list.txt : FD 1 et 2 pointent vers un périphérique de type terminal (comme /dev/pts/0). Cela signifie que le texte est "print" directement dans la console
+
+Dans fd_list_redir.txt : Suite à la commande de redirection (> out.txt 2> err.txt), le noyau a modifié ces pointeurs. Le FD 1 pointe désormais vers le fichier preuves/out.txt et le FD 2 vers preuves/err.txt.
+
+Q6) Dans lsof, repérez au moins 1 ligne “REG” (fichier régulier) et 1 ligne “CHR” (périphérique/terminal). Expliquez ce que ça suggère sur l’endroit où va la sortie.
+Dans la colonne "TYPE" de la commande lsof, on peut identifier ces deux natures de fichiers :
+
+Ligne CHR (Character device) : Elle correspond généralement au terminal (/dev/pts/...)
+Cela suggère que la sortie est traitée comme un flux de caractères envoyé à un périphérique matériel en temps réel (l'écran)
+
+Exemple : 
+bash    7958 root   0u   CHR  136,1      0t0      4 /dev/tty1
+bash    7958 root   1u   CHR  136,1      0t0      4 /dev/tty1
+bash    7958 root   2u   CHR  136,1      0t0      4 /dev/tty1
+
+
+Ligne REG (Regular file) : Elle correspond aux fichiers créés sur le disque (comme out.txt) 
+Cela montre que la sortie est redirigée pour être stockée de façon permanente sur le système
+
+Exemple : 
+bash    7958 root txt    REG    7,1  1298416 131316 /usr/bin/bash
+bash    7958 root mem    REG    7,1  2003408 132931 /usr/lib/x86_64-linux-gnu/libc.so.6
+bash    7958 root mem    REG    7,1   220464 132591 /usr/lib/x86_64-linux-gnu/libtinfo.so.6.5
+bash    7958 root mem    REG    7,1   225600 132928 /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+
+-----------------------------------------------------------
+A3 — Mémoire : RSS, VSZ, pages et observation
+-----------------------------------------------------------
+
+Q7) Comparez VmSize (VSZ) et VmRSS (RSS). Pourquoi peuvent-ils être très différents ?
+
+Dans mon fichier mem_status.txt, on voit une différence entre ces deux valeurs :
+
+VmSize (Virtual Memory Size) : C'est la taille totale de l'espace d'adressage virtuel que le processus a réservé
+Cela inclut tout : code du programme, les zones mémoires allouées mais pas encore utilisées etc ...
+
+VmRSS (Resident Set Size) : C'est la mémoire réellement présente en RAM physique
+
+Pourquoi cette différence ? Le système d'exploitation utilise une technique appelée "Lazy Allocation" ce qui signifis allocation à la demande
+Le programme peut demander de réserver 80 Mo , mais le noyau ne lui donnera réellement des pages de RAM physique (VmRSS) que lorsque le programme sera actif
+
+Q8) Dans pmap, repérez une zone “anon” ou “heap”. Que représente-t-elle ?
+En regardant le fichier pmap_head.txt, on trouve des lignes marquées [ anon ]
+
+Ce que ça représente : Il s'agit de la mémoire "anonyme"
+Cette mémoire anonyme n'est pas sauvegardée dans un fichier spécifique, elle permet de stocker des informations temporaires
+Elle ne prend pas de place réel sur le disque
+
+Le Heap est la zone de mémoire vive (RAM) que le programme utilise pour stocker ses données dynamiques
+C'est dans cet espace que l'OS a placé les 80 Mo créé en Python et cette mémoire n'existe que dans la RAM pendant que le programme s'exécute
+
+-----------------------------------------------------------
+A4 — Ordonnancement : priorité et “nice”
+-----------------------------------------------------------
+
+Q9) Que signifie “nice” ? Quel effet attendu quand on augmente le nice (ex: +10) ?
+
+Définition : Le nice est une valeur (de -20 à +19) qui définit la priorité d'un processus pour l'accès au processeur
+
+Effet : Plus on augmente le chiffre (ex: +10), plus le processus devient "nice" et cela signifie qu'il accepte de laisser passer les autres processus avant lui, ce qui fait qu'il devient moins prioritaire
+
+Q10) Qu’observez-vous sur la répartition CPU ?
+
+Avant le "renice", les deux processus se partageaient le CPU 50/50
+Après avoir passé le processus B à +10, on observe que le processus A prend une part beaucoup plus importante du CPU
+
+L'ordonnanceur du noyau a pris en compte la nouvelle priorité et a décidé de donner plus de CPU au processus A
+
+
